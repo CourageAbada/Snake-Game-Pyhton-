@@ -1,0 +1,88 @@
+import pygame
+import random
+
+# Initialize the game
+pygame.init()
+
+# Set the game screen size and title
+screen = pygame.display.set_mode((600, 600))
+pygame.display.set_caption("Snake Game")
+
+# Set the colors
+white = (255, 255, 255)
+black = (0, 0, 0)
+red = (255, 0, 0)
+
+# Set the font for displaying score
+font_style = pygame.font.SysFont(None, 50)
+
+# Function to display the score on the screen
+def display_score(score):
+    score_text = font_style.render("Score : " + str(score), True, white)
+    screen.blit(score_text, [0,0])
+
+# Initialize snake block and snake speed
+snake_block = 10
+snake_speed = 30
+
+# Initialize snake and food positions
+snake_x = 300
+snake_y = 300
+foodx = 0
+foody = 0
+
+# Initialize snake length and score
+snake_length = 1
+score = 0
+
+# Initialize the clock
+clock = pygame.time.Clock()
+
+# Game loop
+running = True
+while running:
+    for event in pygame.event.get():
+        # Check for KEYDOWN event
+        if event.type == pygame.KEYDOWN:
+            # Move the snake using arrow keys
+            if event.key == pygame.K_LEFT:
+                snake_x -= snake_block
+            if event.key == pygame.K_RIGHT:
+                snake_x += snake_block
+            if event.key == pygame.K_UP:
+                snake_y -= snake_block
+            if event.key == pygame.K_DOWN:
+                snake_y += snake_block
+
+        # Check for QUIT event
+        if event.type == pygame.QUIT:
+            running = False
+    
+    # Set the background color
+    screen.fill(black)
+
+    # Check if the snake hit the boundaries
+    if snake_x >= 600 or snake_x < 0 or snake_y >= 600 or snake_y < 0:
+        running = False
+
+    # Generate random coordinates for food
+    if foodx == 0 and foody == 0:
+        foodx = round(random.randrange(0, 600 - snake_block) / 10.0) * 10.0
+        foody = round(random.randrange(0, 600 - snake_block) / 10.0) * 10.0
+    
+    # Draw the snake and food on the screen
+    pygame.draw.rect(screen, white, [snake_x, snake_y, snake_block, snake_block])
+    pygame.draw.rect(screen, red, [foodx, foody, snake_block, snake_block])
+
+    # Check if the snake hit the food
+    if snake_x == foodx and snake_y == foody:
+        score += 1
+        snake_length += 1
+        foodx = 0
+        foody = 0
+    
+    # Display the score on the screen
+    display_score(score)
+
+    # Update the screen
+    pygame.display
